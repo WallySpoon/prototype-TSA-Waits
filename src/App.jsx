@@ -1,27 +1,42 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
 const AIRPORTS = [
-  { code: "AUS", name: "Austin-Bergstrom International", city: "Austin", state: "TX", terminals: ["Main Terminal"], avgWait: 18, peakWait: 45, precheck: 6, precheckPeak: 14, tagline: "Keep Austin Weird — but keep your line short", icon: "🎸", scene: ["🎸", "🦇", "🌮", "🎶", "🤠"], sceneGrad: "linear-gradient(160deg, #0a0a1a 0%, #1a0a2e 25%, #e94560 55%, #ff6b35 80%, #ffa62b 100%)" },
-  { code: "DFW", name: "Dallas/Fort Worth International", city: "Dallas", state: "TX", terminals: ["Terminal A", "Terminal B", "Terminal C", "Terminal D", "Terminal E"], avgWait: 22, peakWait: 55, precheck: 8, precheckPeak: 18, tagline: "Big airport, big waits — plan ahead", icon: "⛪", scene: ["🤠", "⛪", "🏈", "🥩", "🌆"], sceneGrad: "linear-gradient(160deg, #0f1528 0%, #1a2744 25%, #533483 55%, #e94560 80%, #ff8c42 100%)" },
-  { code: "IAH", name: "George Bush Intercontinental", city: "Houston", state: "TX", terminals: ["Terminal A", "Terminal B", "Terminal C", "Terminal D", "Terminal E"], avgWait: 25, peakWait: 65, precheck: 9, precheckPeak: 20, tagline: "Space City — launch through security", icon: "🚀", scene: ["🚀", "🛰️", "🏗️", "⛽", "🌇"], sceneGrad: "linear-gradient(160deg, #0a0e1a 0%, #1B1B2F 25%, #2D4059 55%, #EA5455 80%, #ff7b54 100%)" },
-  { code: "HOU", name: "William P. Hobby Airport", city: "Houston", state: "TX", terminals: ["Main Terminal"], avgWait: 15, peakWait: 35, precheck: 5, precheckPeak: 12, tagline: "Hobby keeps it quick", icon: "🛫", scene: ["🛫", "🌴", "🏙️", "⛽", "🎨"], sceneGrad: "linear-gradient(160deg, #0e1117 0%, #1B1B2F 25%, #2D4059 55%, #F07B3F 80%, #fca311 100%)" },
-  { code: "SAT", name: "San Antonio International", city: "San Antonio", state: "TX", terminals: ["Terminal A", "Terminal B"], avgWait: 14, peakWait: 30, precheck: 5, precheckPeak: 11, tagline: "Remember the Alamo — and your boarding pass", icon: "🏰", scene: ["🏰", "🌮", "🎻", "🌊", "🌵"], sceneGrad: "linear-gradient(160deg, #1a1f2e 0%, #2C3333 25%, #395B64 55%, #A5C9CA 80%, #e8dbc5 100%)" },
-  { code: "ATL", name: "Hartsfield-Jackson International", city: "Atlanta", state: "GA", terminals: ["North Terminal", "South Terminal"], avgWait: 28, peakWait: 70, precheck: 10, precheckPeak: 22, tagline: "World's busiest — give yourself extra time", icon: "🍑", scene: ["🍑", "🏙️", "🎵", "🌳", "🏟️"], sceneGrad: "linear-gradient(160deg, #0d0d1a 0%, #1a1a2e 25%, #c84b31 55%, #ecdbba 80%, #ffd89b 100%)" },
-  { code: "LAX", name: "Los Angeles International", city: "Los Angeles", state: "CA", terminals: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "TBIT"], avgWait: 26, peakWait: 60, precheck: 9, precheckPeak: 19, tagline: "Hollywood waits for no one — neither should you", icon: "🌴", scene: ["🌴", "🎬", "🌊", "🎭", "☀️"], sceneGrad: "linear-gradient(160deg, #0a0a12 0%, #0f0e17 25%, #ff8906 55%, #f25f4c 80%, #ff4365 100%)" },
-  { code: "ORD", name: "O'Hare International", city: "Chicago", state: "IL", terminals: ["Terminal 1", "Terminal 2", "Terminal 3", "Terminal 5"], avgWait: 27, peakWait: 65, precheck: 10, precheckPeak: 21, tagline: "The Windy City won't blow you through faster", icon: "🌬️", scene: ["🌬️", "🏙️", "🌭", "🎷", "❄️"], sceneGrad: "linear-gradient(160deg, #0a1628 0%, #1B262C 25%, #0F4C75 55%, #3282B8 80%, #BBE1FA 100%)" },
-  { code: "DEN", name: "Denver International", city: "Denver", state: "CO", terminals: ["East Terminal", "West Terminal"], avgWait: 20, peakWait: 50, precheck: 7, precheckPeak: 16, tagline: "Mile High lines — arrive early", icon: "🏔️", scene: ["🏔️", "🎿", "🍺", "🦬", "🌲"], sceneGrad: "linear-gradient(160deg, #0e1520 0%, #2D2D2D 25%, #4A6FA5 55%, #90AACB 80%, #d4e4f7 100%)" },
-  { code: "JFK", name: "John F. Kennedy International", city: "New York", state: "NY", terminals: ["T1", "T2", "T4", "T5", "T7", "T8"], avgWait: 30, peakWait: 75, precheck: 11, precheckPeak: 24, tagline: "The city never sleeps — and neither do these lines", icon: "🗽", scene: ["🗽", "🏙️", "🚕", "🎭", "🌃"], sceneGrad: "linear-gradient(160deg, #050510 0%, #0D1117 25%, #1A3A5C 55%, #4FC1E9 80%, #a8d8ea 100%)" },
-  { code: "LGA", name: "LaGuardia Airport", city: "New York", state: "NY", terminals: ["Terminal B", "Terminal C"], avgWait: 22, peakWait: 50, precheck: 8, precheckPeak: 17, tagline: "Reborn and sleek — but still pack patience", icon: "🌉", scene: ["🌉", "🏙️", "🚇", "🎨", "🌃"], sceneGrad: "linear-gradient(160deg, #080e17 0%, #0D1117 25%, #2C3E50 55%, #E67E22 80%, #ffc048 100%)" },
-  { code: "SFO", name: "San Francisco International", city: "San Francisco", state: "CA", terminals: ["Terminal 1", "Terminal 2", "Terminal 3", "Intl Terminal"], avgWait: 21, peakWait: 48, precheck: 7, precheckPeak: 16, tagline: "Fog rolls in — but you should roll out early", icon: "🌁", scene: ["🌁", "🌊", "🚋", "🦭", "🌿"], sceneGrad: "linear-gradient(160deg, #0a0e1a 0%, #1A1A2E 25%, #E94560 55%, #FFD700 80%, #ffe66d 100%)" },
-  { code: "SEA", name: "Seattle-Tacoma International", city: "Seattle", state: "WA", terminals: ["North Terminal", "South Terminal"], avgWait: 19, peakWait: 45, precheck: 7, precheckPeak: 15, tagline: "Emerald City — green means go early", icon: "☕", scene: ["☕", "🌲", "🐟", "🎸", "🌧️"], sceneGrad: "linear-gradient(160deg, #0a1a14 0%, #1B2838 25%, #2E8B57 55%, #87CEEB 80%, #b8e6d0 100%)" },
-  { code: "MIA", name: "Miami International", city: "Miami", state: "FL", terminals: ["North Terminal", "Central Terminal", "South Terminal"], avgWait: 24, peakWait: 58, precheck: 8, precheckPeak: 18, tagline: "Bienvenidos — but get here early", icon: "🌺", scene: ["🌺", "🌴", "🚤", "🎶", "🌅"], sceneGrad: "linear-gradient(160deg, #060e22 0%, #0A2647 25%, #E91E63 55%, #FF9800 80%, #ffe0b2 100%)" },
-  { code: "MCO", name: "Orlando International", city: "Orlando", state: "FL", terminals: ["Terminal A", "Terminal B", "Terminal C"], avgWait: 23, peakWait: 55, precheck: 8, precheckPeak: 18, tagline: "The magic is getting through security fast", icon: "🎢", scene: ["🎢", "🏰", "🌴", "🎆", "☀️"], sceneGrad: "linear-gradient(160deg, #0a0a20 0%, #1A1A40 25%, #7B2FBE 55%, #E040FB 80%, #f8bbd0 100%)" },
-  { code: "MSP", name: "Minneapolis-Saint Paul International", city: "Minneapolis", state: "MN", terminals: ["Terminal 1", "Terminal 2"], avgWait: 17, peakWait: 40, precheck: 6, precheckPeak: 13, tagline: "Twin Cities, one goal — beat the line", icon: "❄️", scene: ["❄️", "🏒", "🌾", "🎭", "🦆"], sceneGrad: "linear-gradient(160deg, #0e1028 0%, #1C1C3C 25%, #4169E1 55%, #87CEEB 80%, #cce5ff 100%)" },
-  { code: "BOS", name: "Boston Logan International", city: "Boston", state: "MA", terminals: ["Terminal A", "Terminal B", "Terminal C", "Terminal E"], avgWait: 21, peakWait: 50, precheck: 7, precheckPeak: 16, tagline: "Wicked smart to arrive early", icon: "🏛️", scene: ["🏛️", "🦞", "⛵", "📚", "🍀"], sceneGrad: "linear-gradient(160deg, #0e0e1a 0%, #1B1B2F 25%, #8B0000 55%, #D4A373 80%, #edd9b7 100%)" },
-  { code: "PHX", name: "Phoenix Sky Harbor International", city: "Phoenix", state: "AZ", terminals: ["Terminal 3", "Terminal 4"], avgWait: 16, peakWait: 38, precheck: 6, precheckPeak: 13, tagline: "Desert heat outside, cool lines inside", icon: "🌵", scene: ["🌵", "☀️", "🏜️", "🦎", "🌅"], sceneGrad: "linear-gradient(160deg, #1a0e08 0%, #2C1810 25%, #D84315 55%, #FFB74D 80%, #ffe0b2 100%)" },
-  { code: "LAS", name: "Harry Reid International", city: "Las Vegas", state: "NV", terminals: ["Terminal 1", "Terminal 3"], avgWait: 22, peakWait: 52, precheck: 8, precheckPeak: 17, tagline: "Don't gamble on arriving late", icon: "🎰", scene: ["🎰", "🎲", "🌃", "💎", "🎵"], sceneGrad: "linear-gradient(160deg, #050508 0%, #0D0D0D 25%, #6A0DAD 55%, #FFD700 80%, #fff176 100%)" },
-  { code: "CLT", name: "Charlotte Douglas International", city: "Charlotte", state: "NC", terminals: ["Main Terminal"], avgWait: 19, peakWait: 44, precheck: 7, precheckPeak: 15, tagline: "Queen City moves — you should too", icon: "👑", scene: ["👑", "🏎️", "🌳", "🏦", "🍺"], sceneGrad: "linear-gradient(160deg, #0a1218 0%, #1A1A2E 25%, #00695C 55%, #80CBC4 80%, #b2dfdb 100%)" },
+  { code: "AUS", lat: 30.1975, lng: -97.6664, name: "Austin-Bergstrom International", city: "Austin", state: "TX", terminals: ["Main Terminal"], avgWait: 18, peakWait: 45, precheck: 6, precheckPeak: 14, tagline: "Keep Austin Weird — but keep your line short", icon: "🎸", scene: ["🎸", "🦇", "🌮", "🎶", "🤠"], sceneGrad: "linear-gradient(160deg, #0a0a1a 0%, #1a0a2e 25%, #e94560 55%, #ff6b35 80%, #ffa62b 100%)" },
+  { code: "DFW", lat: 32.8998, lng: -97.0403, name: "Dallas/Fort Worth International", city: "Dallas", state: "TX", terminals: ["Terminal A", "Terminal B", "Terminal C", "Terminal D", "Terminal E"], avgWait: 22, peakWait: 55, precheck: 8, precheckPeak: 18, tagline: "Big airport, big waits — plan ahead", icon: "⛪", scene: ["🤠", "⛪", "🏈", "🥩", "🌆"], sceneGrad: "linear-gradient(160deg, #0f1528 0%, #1a2744 25%, #533483 55%, #e94560 80%, #ff8c42 100%)" },
+  { code: "IAH", lat: 29.9902, lng: -95.3368, name: "George Bush Intercontinental", city: "Houston", state: "TX", terminals: ["Terminal A", "Terminal B", "Terminal C", "Terminal D", "Terminal E"], avgWait: 25, peakWait: 65, precheck: 9, precheckPeak: 20, tagline: "Space City — launch through security", icon: "🚀", scene: ["🚀", "🛰️", "🏗️", "⛽", "🌇"], sceneGrad: "linear-gradient(160deg, #0a0e1a 0%, #1B1B2F 25%, #2D4059 55%, #EA5455 80%, #ff7b54 100%)" },
+  { code: "HOU", lat: 29.6454, lng: -95.2789, name: "William P. Hobby Airport", city: "Houston", state: "TX", terminals: ["Main Terminal"], avgWait: 15, peakWait: 35, precheck: 5, precheckPeak: 12, tagline: "Hobby keeps it quick", icon: "🛫", scene: ["🛫", "🌴", "🏙️", "⛽", "🎨"], sceneGrad: "linear-gradient(160deg, #0e1117 0%, #1B1B2F 25%, #2D4059 55%, #F07B3F 80%, #fca311 100%)" },
+  { code: "SAT", lat: 29.5337, lng: -98.4698, name: "San Antonio International", city: "San Antonio", state: "TX", terminals: ["Terminal A", "Terminal B"], avgWait: 14, peakWait: 30, precheck: 5, precheckPeak: 11, tagline: "Remember the Alamo — and your boarding pass", icon: "🏰", scene: ["🏰", "🌮", "🎻", "🌊", "🌵"], sceneGrad: "linear-gradient(160deg, #1a1f2e 0%, #2C3333 25%, #395B64 55%, #A5C9CA 80%, #e8dbc5 100%)" },
+  { code: "ATL", lat: 33.6407, lng: -84.4277, name: "Hartsfield-Jackson International", city: "Atlanta", state: "GA", terminals: ["North Terminal", "South Terminal"], avgWait: 28, peakWait: 70, precheck: 10, precheckPeak: 22, tagline: "World's busiest — give yourself extra time", icon: "🍑", scene: ["🍑", "🏙️", "🎵", "🌳", "🏟️"], sceneGrad: "linear-gradient(160deg, #0d0d1a 0%, #1a1a2e 25%, #c84b31 55%, #ecdbba 80%, #ffd89b 100%)" },
+  { code: "LAX", lat: 33.9425, lng: -118.4081, name: "Los Angeles International", city: "Los Angeles", state: "CA", terminals: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "TBIT"], avgWait: 26, peakWait: 60, precheck: 9, precheckPeak: 19, tagline: "Hollywood waits for no one — neither should you", icon: "🌴", scene: ["🌴", "🎬", "🌊", "🎭", "☀️"], sceneGrad: "linear-gradient(160deg, #0a0a12 0%, #0f0e17 25%, #ff8906 55%, #f25f4c 80%, #ff4365 100%)" },
+  { code: "ORD", lat: 41.9742, lng: -87.9073, name: "O'Hare International", city: "Chicago", state: "IL", terminals: ["Terminal 1", "Terminal 2", "Terminal 3", "Terminal 5"], avgWait: 27, peakWait: 65, precheck: 10, precheckPeak: 21, tagline: "The Windy City won't blow you through faster", icon: "🌬️", scene: ["🌬️", "🏙️", "🌭", "🎷", "❄️"], sceneGrad: "linear-gradient(160deg, #0a1628 0%, #1B262C 25%, #0F4C75 55%, #3282B8 80%, #BBE1FA 100%)" },
+  { code: "DEN", lat: 39.8561, lng: -104.6737, name: "Denver International", city: "Denver", state: "CO", terminals: ["East Terminal", "West Terminal"], avgWait: 20, peakWait: 50, precheck: 7, precheckPeak: 16, tagline: "Mile High lines — arrive early", icon: "🏔️", scene: ["🏔️", "🎿", "🍺", "🦬", "🌲"], sceneGrad: "linear-gradient(160deg, #0e1520 0%, #2D2D2D 25%, #4A6FA5 55%, #90AACB 80%, #d4e4f7 100%)" },
+  { code: "JFK", lat: 40.6413, lng: -73.7781, name: "John F. Kennedy International", city: "New York", state: "NY", terminals: ["T1", "T2", "T4", "T5", "T7", "T8"], avgWait: 30, peakWait: 75, precheck: 11, precheckPeak: 24, tagline: "The city never sleeps — and neither do these lines", icon: "🗽", scene: ["🗽", "🏙️", "🚕", "🎭", "🌃"], sceneGrad: "linear-gradient(160deg, #050510 0%, #0D1117 25%, #1A3A5C 55%, #4FC1E9 80%, #a8d8ea 100%)" },
+  { code: "LGA", lat: 40.7769, lng: -73.8740, name: "LaGuardia Airport", city: "New York", state: "NY", terminals: ["Terminal B", "Terminal C"], avgWait: 22, peakWait: 50, precheck: 8, precheckPeak: 17, tagline: "Reborn and sleek — but still pack patience", icon: "🌉", scene: ["🌉", "🏙️", "🚇", "🎨", "🌃"], sceneGrad: "linear-gradient(160deg, #080e17 0%, #0D1117 25%, #2C3E50 55%, #E67E22 80%, #ffc048 100%)" },
+  { code: "SFO", lat: 37.6213, lng: -122.3790, name: "San Francisco International", city: "San Francisco", state: "CA", terminals: ["Terminal 1", "Terminal 2", "Terminal 3", "Intl Terminal"], avgWait: 21, peakWait: 48, precheck: 7, precheckPeak: 16, tagline: "Fog rolls in — but you should roll out early", icon: "🌁", scene: ["🌁", "🌊", "🚋", "🦭", "🌿"], sceneGrad: "linear-gradient(160deg, #0a0e1a 0%, #1A1A2E 25%, #E94560 55%, #FFD700 80%, #ffe66d 100%)" },
+  { code: "SEA", lat: 47.4502, lng: -122.3088, name: "Seattle-Tacoma International", city: "Seattle", state: "WA", terminals: ["North Terminal", "South Terminal"], avgWait: 19, peakWait: 45, precheck: 7, precheckPeak: 15, tagline: "Emerald City — green means go early", icon: "☕", scene: ["☕", "🌲", "🐟", "🎸", "🌧️"], sceneGrad: "linear-gradient(160deg, #0a1a14 0%, #1B2838 25%, #2E8B57 55%, #87CEEB 80%, #b8e6d0 100%)" },
+  { code: "MIA", lat: 25.7959, lng: -80.2870, name: "Miami International", city: "Miami", state: "FL", terminals: ["North Terminal", "Central Terminal", "South Terminal"], avgWait: 24, peakWait: 58, precheck: 8, precheckPeak: 18, tagline: "Bienvenidos — but get here early", icon: "🌺", scene: ["🌺", "🌴", "🚤", "🎶", "🌅"], sceneGrad: "linear-gradient(160deg, #060e22 0%, #0A2647 25%, #E91E63 55%, #FF9800 80%, #ffe0b2 100%)" },
+  { code: "MCO", lat: 28.4312, lng: -81.3081, name: "Orlando International", city: "Orlando", state: "FL", terminals: ["Terminal A", "Terminal B", "Terminal C"], avgWait: 23, peakWait: 55, precheck: 8, precheckPeak: 18, tagline: "The magic is getting through security fast", icon: "🎢", scene: ["🎢", "🏰", "🌴", "🎆", "☀️"], sceneGrad: "linear-gradient(160deg, #0a0a20 0%, #1A1A40 25%, #7B2FBE 55%, #E040FB 80%, #f8bbd0 100%)" },
+  { code: "MSP", lat: 44.8848, lng: -93.2223, name: "Minneapolis-Saint Paul International", city: "Minneapolis", state: "MN", terminals: ["Terminal 1", "Terminal 2"], avgWait: 17, peakWait: 40, precheck: 6, precheckPeak: 13, tagline: "Twin Cities, one goal — beat the line", icon: "❄️", scene: ["❄️", "🏒", "🌾", "🎭", "🦆"], sceneGrad: "linear-gradient(160deg, #0e1028 0%, #1C1C3C 25%, #4169E1 55%, #87CEEB 80%, #cce5ff 100%)" },
+  { code: "BOS", lat: 42.3656, lng: -71.0096, name: "Boston Logan International", city: "Boston", state: "MA", terminals: ["Terminal A", "Terminal B", "Terminal C", "Terminal E"], avgWait: 21, peakWait: 50, precheck: 7, precheckPeak: 16, tagline: "Wicked smart to arrive early", icon: "🏛️", scene: ["🏛️", "🦞", "⛵", "📚", "🍀"], sceneGrad: "linear-gradient(160deg, #0e0e1a 0%, #1B1B2F 25%, #8B0000 55%, #D4A373 80%, #edd9b7 100%)" },
+  { code: "PHX", lat: 33.4373, lng: -112.0078, name: "Phoenix Sky Harbor International", city: "Phoenix", state: "AZ", terminals: ["Terminal 3", "Terminal 4"], avgWait: 16, peakWait: 38, precheck: 6, precheckPeak: 13, tagline: "Desert heat outside, cool lines inside", icon: "🌵", scene: ["🌵", "☀️", "🏜️", "🦎", "🌅"], sceneGrad: "linear-gradient(160deg, #1a0e08 0%, #2C1810 25%, #D84315 55%, #FFB74D 80%, #ffe0b2 100%)" },
+  { code: "LAS", lat: 36.0840, lng: -115.1537, name: "Harry Reid International", city: "Las Vegas", state: "NV", terminals: ["Terminal 1", "Terminal 3"], avgWait: 22, peakWait: 52, precheck: 8, precheckPeak: 17, tagline: "Don't gamble on arriving late", icon: "🎰", scene: ["🎰", "🎲", "🌃", "💎", "🎵"], sceneGrad: "linear-gradient(160deg, #050508 0%, #0D0D0D 25%, #6A0DAD 55%, #FFD700 80%, #fff176 100%)" },
+  { code: "CLT", lat: 35.2140, lng: -80.9431, name: "Charlotte Douglas International", city: "Charlotte", state: "NC", terminals: ["Main Terminal"], avgWait: 19, peakWait: 44, precheck: 7, precheckPeak: 15, tagline: "Queen City moves — you should too", icon: "👑", scene: ["👑", "🏎️", "🌳", "🏦", "🍺"], sceneGrad: "linear-gradient(160deg, #0a1218 0%, #1A1A2E 25%, #00695C 55%, #80CBC4 80%, #b2dfdb 100%)" },
 ];
+
+function haversineDistance(lat1, lng1, lat2, lng2) {
+  const R = 3959;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function findNearestAirport(userLat, userLng) {
+  return AIRPORTS.reduce((best, airport) => {
+    const dist = haversineDistance(userLat, userLng, airport.lat, airport.lng);
+    return dist < best.dist ? { airport, dist } : best;
+  }, { airport: AIRPORTS[0], dist: Infinity }).airport;
+}
 
 const HOURS = ["4a","5a","6a","7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p","7p","8p","9p"];
 const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -299,9 +314,24 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [mode, setMode] = useState("my");
   const [search, setSearch] = useState("");
-  const [favs, setFavs] = useState(["AUS"]);
+  const [favs, setFavs] = useState([]);
+  const [homeCode, setHomeCode] = useState("AUS");
+  const [locStatus, setLocStatus] = useState("detecting");
 
-  const homeAirport = AIRPORTS.find(a => a.code === "AUS");
+  useEffect(() => {
+    if (!navigator.geolocation) { setLocStatus("unavailable"); return; }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const nearest = findNearestAirport(coords.latitude, coords.longitude);
+        setHomeCode(nearest.code);
+        setLocStatus("found");
+      },
+      () => setLocStatus("denied"),
+      { timeout: 8000 }
+    );
+  }, []);
+
+  const homeAirport = AIRPORTS.find(a => a.code === homeCode);
 
   const toggleFav = useCallback((code) => {
     setFavs(prev => prev.includes(code) ? prev.filter(c => c !== code) : [...prev, code]);
@@ -318,7 +348,7 @@ export default function App() {
     ).slice(0, 8);
   }, [search]);
 
-  const favAirports = useMemo(() => AIRPORTS.filter(a => favs.includes(a.code) && a.code !== "AUS"), [favs]);
+  const favAirports = useMemo(() => AIRPORTS.filter(a => favs.includes(a.code) && a.code !== homeCode), [favs, homeCode]);
 
   if (view === "detail" && selected) {
     const airport = AIRPORTS.find(a => a.code === selected);
@@ -349,8 +379,13 @@ export default function App() {
 
       {mode === "my" && (
         <div>
-          <div style={{ fontSize: 13, color: "#888", marginBottom: 10, fontWeight: 500 }}>Your home airport</div>
-          <CityHero airport={homeAirport} onClick={() => { setSelected("AUS"); setView("detail"); }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <div style={{ fontSize: 13, color: "#888", fontWeight: 500 }}>Your home airport</div>
+            {locStatus === "detecting" && <div style={{ fontSize: 11, color: "#aaa" }}>📍 Detecting location…</div>}
+            {locStatus === "found" && <div style={{ fontSize: 11, color: "#4A6FA5" }}>📍 Nearest to you</div>}
+            {(locStatus === "denied" || locStatus === "unavailable") && <div style={{ fontSize: 11, color: "#aaa" }}>📍 Location unavailable</div>}
+          </div>
+          <CityHero airport={homeAirport} onClick={() => { setSelected(homeCode); setView("detail"); }} />
         </div>
       )}
 
